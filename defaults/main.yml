@@ -1,0 +1,7 @@
+# Signal
+signal_package_name: "signal-desktop"
+signal_gpg_key_url: "https://updates.signal.org/desktop/apt/keys.asc"
+signal_gpg_key_tmp: "/tmp/signal-keys.asc"
+signal_gpg_keyring: "/usr/share/keyrings/signal-desktop-keyring.gpg"
+signal_sources_url: "https://updates.signal.org/static/desktop/apt/signal-desktop.sources"
+signal_sources_file: "/etc/apt/sources.list.d/signal-desktop.sources"

@@ -1,0 +1,43 @@
+---
+- name: Check if Signal is already installed
+  ansible.builtin.command: dpkg-query -W {{ signal_package_name }}
+  register: signal_installed
+  failed_when: false
+  changed_when: false
+
+- name: Download Signal GPG key
+  ansible.builtin.get_url:
+    url: "{{ signal_gpg_key_url }}"
+    dest: "{{ signal_gpg_key_tmp }}"
+    mode: '0644'
+  when: signal_installed.rc != 0
+
+- name: Convert Signal key to apt keyring format
+  ansible.builtin.command: >
+    gpg --dearmor --yes --output {{ signal_gpg_keyring }} {{ signal_gpg_key_tmp }}
+  args:
+    creates: "{{ signal_gpg_keyring }}"
+  become: true
+  when: signal_installed.rc != 0
+
+- name: Remove temporary GPG key file
+  ansible.builtin.file:
+    path: "{{ signal_gpg_key_tmp }}"
+    state: absent
+  when: signal_installed.rc != 0
+
+- name: Download Signal repository sources file
+  ansible.builtin.get_url:
+    url: "{{ signal_sources_url }}"
+    dest: "{{ signal_sources_file }}"
+    mode: '0644'
+  become: true
+  when: signal_installed.rc != 0
+
+- name: Install Signal
+  ansible.builtin.apt:
+    name: "{{ signal_package_name }}"
+    state: present
+    update_cache: true
+  become: true
+  when: signal_installed.rc != 0
