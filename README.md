@@ -36,6 +36,20 @@ To conditionally install only on private machines:
   when: is_private_machine
 ```
 
+## Manual setup (without Ansible)
+
+```bash
+sudo apt install curl gnupg
+curl -fL https://updates.signal.org/desktop/apt/keys.asc -o /tmp/signal-keys.asc
+sudo gpg --dearmor --yes --output /usr/share/keyrings/signal-desktop-keyring.gpg /tmp/signal-keys.asc
+sudo chmod 0644 /usr/share/keyrings/signal-desktop-keyring.gpg
+rm /tmp/signal-keys.asc
+sudo curl -fL https://updates.signal.org/static/desktop/apt/signal-desktop.sources -o /etc/apt/sources.list.d/signal-desktop.sources
+sudo chmod 0644 /etc/apt/sources.list.d/signal-desktop.sources
+sudo apt update
+sudo apt install signal-desktop
+```
+
 ## License
 
 MIT
